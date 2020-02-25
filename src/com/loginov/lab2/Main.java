@@ -13,7 +13,7 @@ public class Main {
         for (int i = 0; i < shapes.length; i++) {
             switch (random.nextInt(3)) {
                 case 0:
-                    float radius = random.nextInt(10);
+                    float radius = random.nextInt(9);
                     shapes[i] = new Circle(radius);
                     break;
                 case 1:
