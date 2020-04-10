@@ -27,6 +27,9 @@ public class Rectangle implements Polygon {
         this.p1 = p1;
         this.p2 = p2;
 
+        if (p1.equals(p2)) {
+            throw new IllegalArgumentException();
+        }
         length = Math.abs(p1.getX() - p2.getX());
         height = Math.abs(p1.getY() - p2.getY());
         angle = 0;
@@ -64,7 +67,8 @@ public class Rectangle implements Polygon {
 
     @Override
     public String toString() {
-        return "Rectangle{" +
+        return "area = " + getArea()
+                + " --- Rectangle{" +
                 "p1=" + p1 +
                 ", p2=" + p2 +
                 ", length=" + length +

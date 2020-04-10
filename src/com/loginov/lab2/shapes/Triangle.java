@@ -1,19 +1,5 @@
 package com.loginov.lab2.shapes;
 
-/**
- * Представление о треугольнике.
- * <p>
- * Треуго́льник (в евклидовом пространстве) — геометрическая
- * фигура, образованная тремя отрезками, которые соединяют
- * три точки, не лежащие на одной прямой. Указанные три
- * точки называются вершинами треугольника, а отрезки —
- * сторонами треугольника. Часть плоскости, ограниченная
- * сторонами, называется внутренностью треугольника: нередко
- * треугольник рассматривается вместе со своей внутренностью
- * (например, для определения понятия площади).
- *
- * @see <a href="https://ru.wikipedia.org/wiki/%D0%A2%D1%80%D0%B5%D1%83%D0%B3%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA">Треугольник</a>
- */
 public class Triangle implements Polygon {
     private Point p1;
     private Point p2;
@@ -24,6 +10,7 @@ public class Triangle implements Polygon {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
+
         angle = 0;
     }
 
@@ -55,7 +42,8 @@ public class Triangle implements Polygon {
 
     @Override
     public String toString() {
-        return "Triangle{" +
+        return "area = " + getArea()
+                + " --- Triangle{" +
                 "p1=" + p1 +
                 ", p2=" + p2 +
                 ", p3=" + p3 +

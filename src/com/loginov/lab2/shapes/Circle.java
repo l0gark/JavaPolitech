@@ -18,7 +18,7 @@ public class Circle implements Ellipse {
 
     @Override
     public float getLength() {
-        return radius;
+        return 2 * (float) Math.PI * radius;
     }
 
     @Override
@@ -28,7 +28,8 @@ public class Circle implements Ellipse {
 
     @Override
     public String toString() {
-        return "Circle{" +
+        return "area = " + getArea()
+                + " --- Circle{" +
                 "radius=" + radius +
                 '}';
     }

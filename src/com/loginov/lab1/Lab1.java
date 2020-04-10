@@ -15,12 +15,13 @@ public class Lab1 {
     // LOOK HERE!
     // HACK ME PLEASE, if you can!!!
 
-
     void solve() {
+
         int n = nextInt();
         int[] numbers = nextIntArray(n);
 
         Arrays.stream(numbers)
+                .filter(x -> x > 0)
                 .filter(this::isSimpleNumber)
                 .mapToObj(x -> x + " ")
                 .forEach(out::print);

@@ -1,7 +1,12 @@
 package com.loginov.lab2;
 
 
-import com.loginov.lab2.shapes.*;
+import com.loginov.lab2.shapes.Circle;
+import com.loginov.lab2.shapes.MyPoint;
+import com.loginov.lab2.shapes.Point;
+import com.loginov.lab2.shapes.Rectangle;
+import com.loginov.lab2.shapes.Shape;
+import com.loginov.lab2.shapes.Triangle;
 
 import java.util.Random;
 
@@ -29,13 +34,13 @@ public class Main {
 
         System.out.println("Набор фигур");
         for (final Shape shape : shapes) {
-            System.out.println(shape.getArea() + " --- " + shape.toString());
+            System.out.println(shape.toString());
         }
 
         System.out.println("\n------------------------------------------\n");
 
         final Shape maxShape = findShapeWithMaxArea(shapes);
-        System.out.println("Максимальная фигура - \n" + maxShape.toString());
+        System.out.println("Максимальная фигура\n" + maxShape.toString());
     }
 
     public static Shape findShapeWithMaxArea(final Shape[] shapes) {
