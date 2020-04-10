@@ -10,6 +10,6 @@ public final class RandomUtils {
     }
 
     public static int index(int length){
-        return random.nextInt();
+        return random.nextInt(length);
     }
 }

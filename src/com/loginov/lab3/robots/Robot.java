@@ -26,6 +26,7 @@ public class Robot {
             if (!student.getSubjectName().equals(subjectName)) {
                 throw new IllegalArgumentException("Student go to wrong robot!");
             }
+            System.out.println("Robot " + subjectName + " begin check student " + student.getName());
             ready.set(false);
 
             int restLabs = student.getLabsCount();
@@ -35,10 +36,14 @@ public class Robot {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+
+                System.out.println("Robot " + subjectName.toUpperCase() + " continue check " + student.getName());
                 restLabs -= VELOCITY;
             }
         }).thenAccept(aVoid -> {
+            System.out.println("Robot " + subjectName.toUpperCase() + " end check " + student.getName());
             ready.set(true);
+            System.out.println("Robot " + subjectName.toUpperCase() + " is ready");
             onNextStudentListener.next(subjectName);
         }).exceptionally(e -> {
             log.log(Level.WARNING, e, e::getLocalizedMessage);

@@ -1,43 +1,61 @@
 package com.loginov.lab3;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import com.loginov.lab3.robots.RobotPool;
+
+import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
-
+    private final static Logger logger = Logger.getLogger(Main.class.getSimpleName());
     private final static int ROOM_CAPACITY = 10;
-    private final static int ROBOT_COUNT = 3;
 
     public static void main(String[] args) {
         new Main().run();
     }
 
     private void run() {
-        final AtomicInteger countStudentsInRoom = new AtomicInteger(0);
-        final AtomicInteger countStudentsOnStreet = new AtomicInteger(100);
-        final AtomicInteger countStudentsInHome = new AtomicInteger(0);
+        final ConcurrentLinkedQueue<Student> queue = new ConcurrentLinkedQueue<>(StudentGenerator.generateN(ROOM_CAPACITY));
+        CountDownLatch countDownLatch = new CountDownLatch(100 - ROOM_CAPACITY);
 
-        final OnStudentLeaveRoomListener onStudentLeaveRoomListener = () -> {
-            final int freePlaces = ROOM_CAPACITY - countStudentsInRoom.get();
-            if (freePlaces <= countStudentsInRoom.get()) {
-                countStudentsOnStreet.updateAndGet(i -> i - freePlaces);
-                countStudentsInRoom.addAndGet(freePlaces);
-            } else {
-                countStudentsInRoom.addAndGet(countStudentsOnStreet.getAndUpdate(i -> 0));
+        final RobotPool robotPool = new RobotPool();
+
+        final RobotPool.OnRobotsReadyListener onRobotsReadyListener = robotNames -> {
+            while (!queue.isEmpty()) {
+                final Student student = queue.peek();
+                if (!robotNames.contains(student.getSubjectName())) {
+                    return;
+                }
+                robotPool.nextStudent(queue.poll());
+                addStudent(countDownLatch, queue);
             }
         };
+        robotPool.setOnRobotsReadyListener(onRobotsReadyListener);
+        new Scanner(System.in).next();
 
-        final ExecutorService teachersPool = Executors.newFixedThreadPool(3);
-        while (countStudentsInHome.get() != 0) {
-
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
 
-    @FunctionalInterface
-    private interface OnStudentLeaveRoomListener {
-        void leave();
+    private void addStudent(final CountDownLatch restStudents, final ConcurrentLinkedQueue<Student> queue) {
+        CompletableFuture.runAsync(() -> {
+            if (restStudents.getCount() > 0) {
+                restStudents.countDown();
+                final Student student = StudentGenerator.generate();
+                queue.add(student);
+            }
+        }).exceptionally(e -> {
+            logger.log(Level.WARNING, e, e::getLocalizedMessage);
+            return null;
+        });
     }
 }

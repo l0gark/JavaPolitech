@@ -14,16 +14,21 @@ public class RobotPool {
     private static final String[] SUBJECT_NAMES = {"Вышмат", "ООП", "Физика"};
 
     private final Robot[] robots;
-    private final OnRobotsReadyListener onRobotsReadyListener;
 
-    private RobotPool(final OnRobotsReadyListener onRobotsReadyListener) {
-        this.onRobotsReadyListener = onRobotsReadyListener;
+
+    private OnRobotsReadyListener onRobotsReadyListener;
+
+    public RobotPool() {
         this.robots = createRobots();
     }
 
     private Robot[] createRobots() {
         final Robot[] robots = new Robot[SUBJECT_NAMES.length];
         final Robot.OnNextStudentListener onNextStudentListener = robotName -> {
+            if (onRobotsReadyListener == null) {
+                logger.log(Level.WARNING, "Listener cant be null on this state!", new IllegalStateException());
+                throw new IllegalStateException();
+            }
             onRobotsReadyListener.ready(getReadyRobots());
         };
 
@@ -55,6 +60,11 @@ public class RobotPool {
                 .filter(Robot::isReady)
                 .map(Robot::getSubjectName)
                 .collect(Collectors.toList());
+    }
+
+    public void setOnRobotsReadyListener(OnRobotsReadyListener onRobotsReadyListener) {
+        this.onRobotsReadyListener = onRobotsReadyListener;
+        onRobotsReadyListener.ready(getReadyRobots());
     }
 
     @FunctionalInterface
