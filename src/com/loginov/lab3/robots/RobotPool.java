@@ -2,6 +2,9 @@ package com.loginov.lab3.robots;
 
 import com.loginov.lab3.Student;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -65,6 +68,19 @@ public class RobotPool {
     public void setOnRobotsReadyListener(OnRobotsReadyListener onRobotsReadyListener) {
         this.onRobotsReadyListener = onRobotsReadyListener;
         onRobotsReadyListener.ready(getReadyRobots());
+    }
+
+    public void printStats(final String filename) {
+        try (final PrintWriter out = new PrintWriter(new File(filename))) {
+            for (final Robot robot : robots) {
+                out.println("--------" + robot.getSubjectName() + "--------\n\n\n");
+                for (final String s : robot.getStats()) {
+                    out.println(s);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @FunctionalInterface

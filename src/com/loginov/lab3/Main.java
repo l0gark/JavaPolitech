@@ -20,7 +20,7 @@ public class Main {
 
     private void run() {
         final ConcurrentLinkedQueue<Student> queue = new ConcurrentLinkedQueue<>(StudentGenerator.generateN(ROOM_CAPACITY));
-        CountDownLatch countDownLatch = new CountDownLatch(100 - ROOM_CAPACITY);
+        final CountDownLatch countDownLatch = new CountDownLatch(100 - ROOM_CAPACITY);
 
         final RobotPool robotPool = new RobotPool();
 
@@ -35,7 +35,6 @@ public class Main {
             }
         };
         robotPool.setOnRobotsReadyListener(onRobotsReadyListener);
-        new Scanner(System.in).next();
 
         try {
             countDownLatch.await();
@@ -43,6 +42,7 @@ public class Main {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
+        robotPool.printStats("output.txt");
     }
 
 
