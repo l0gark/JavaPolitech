@@ -4,7 +4,6 @@ import com.loginov.lab3.Student;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -62,7 +61,6 @@ public class Robot {
 
     private void printMessage(final String msg) {
         stats.add(msg);
-//        System.out.println(msg);
     }
 
     public String getSubjectName() {

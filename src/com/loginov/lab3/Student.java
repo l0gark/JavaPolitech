@@ -3,7 +3,7 @@ package com.loginov.lab3;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Student {
-    private static AtomicInteger ALL_STUDENTS_COUNT = new AtomicInteger(0);
+    private static final AtomicInteger ALL_STUDENTS_COUNT = new AtomicInteger(0);
     private final int labsCount;
     private final String subjectName;
     private final String name;

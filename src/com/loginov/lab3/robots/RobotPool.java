@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class RobotPool {
     private static final Logger logger = Logger.getLogger(RobotPool.class.getSimpleName());
-    private static final String[] SUBJECT_NAMES = {"Вышмат", "ООП", "Физика"};
+    public static final String[] SUBJECT_NAMES = {"Вышмат", "ООП", "Физика"};
 
     private final Robot[] robots;
     private final CountDownLatch countDownLatch;
@@ -47,7 +47,7 @@ public class RobotPool {
                 return true;
             }
         }
-//        logger.log(Level.INFO, "Студент " + student.getName() + " зашёл, а робот занят!");
+        logger.log(Level.INFO, "Student " + student.getName() + " go, but robot is busy!");
         return false;
     }
 

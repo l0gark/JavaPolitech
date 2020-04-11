@@ -3,8 +3,9 @@ package com.loginov.lab3;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.loginov.lab3.robots.RobotPool.SUBJECT_NAMES;
+
 public final class StudentGenerator {
-    private static final String[] SUBJECT_NAMES = {"Вышмат", "ООП", "Физика"};
     private static final int[] LAB_COUNTS = {10, 20, 15};
 
     private StudentGenerator() {
