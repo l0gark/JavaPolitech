@@ -4,7 +4,9 @@ import com.loginov.lab3.Student;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,9 +17,11 @@ public class Robot {
     private final String subjectName;
     private final OnNextStudentListener onNextStudentListener;
     private final static int VELOCITY = 5;
-    private final static long WORK_TIME = 200;
+    private final static long WORK_TIME = 20;
 
     private final ConcurrentLinkedDeque<String> stats = new ConcurrentLinkedDeque<>();
+    private final AtomicInteger studentsCount = new AtomicInteger(0);
+
 
     public Robot(final String subjectName, final OnNextStudentListener onNextStudentListener) {
         this.subjectName = subjectName;
@@ -30,7 +34,7 @@ public class Robot {
             if (!student.getSubjectName().equals(subjectName)) {
                 throw new IllegalArgumentException("Student go to wrong robot!");
             }
-            printMesage("Robot " + subjectName + " begin check student " + student.getName());
+            printMessage("Robot " + subjectName + " begin check student " + student.getName());
 
             int restLabs = student.getLabsCount();
             while (restLabs > 0) {
@@ -41,14 +45,14 @@ public class Robot {
                 }
 
 
-                printMesage("Robot " + subjectName.toUpperCase() + " continue check " + student.getName());
-                System.out.println();
+                printMessage("Robot " + subjectName.toUpperCase() + " continue check " + student.getName());
                 restLabs -= VELOCITY;
             }
         }).thenAccept(aVoid -> {
-            printMesage("Robot " + subjectName.toUpperCase() + " end check " + student.getName());
+            printMessage("Robot " + subjectName.toUpperCase() + " end check " + student.getName());
             ready.set(true);
-            printMesage("Robot " + subjectName.toUpperCase() + " is ready");
+            studentsCount.incrementAndGet();
+            printMessage("Robot " + subjectName.toUpperCase() + " is ready");
             onNextStudentListener.next(subjectName);
         }).exceptionally(e -> {
             log.log(Level.WARNING, e, e::getLocalizedMessage);
@@ -56,9 +60,9 @@ public class Robot {
         });
     }
 
-    private void printMesage(final String msg) {
+    private void printMessage(final String msg) {
         stats.add(msg);
-        System.out.println(msg);
+//        System.out.println(msg);
     }
 
     public String getSubjectName() {
@@ -67,6 +71,10 @@ public class Robot {
 
     public boolean isReady() {
         return ready.get();
+    }
+
+    public int getStudentsCount() {
+        return studentsCount.get();
     }
 
     public ConcurrentLinkedDeque<String> getStats() {

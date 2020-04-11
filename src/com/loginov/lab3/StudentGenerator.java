@@ -5,7 +5,7 @@ import java.util.Collection;
 
 public final class StudentGenerator {
     private static final String[] SUBJECT_NAMES = {"Вышмат", "ООП", "Физика"};
-    private static final int[] LAB_COUNTS = {10, 20, 100};
+    private static final int[] LAB_COUNTS = {10, 20, 15};
 
     private StudentGenerator() {
     }

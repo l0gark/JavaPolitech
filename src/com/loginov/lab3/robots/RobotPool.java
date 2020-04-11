@@ -2,26 +2,22 @@ package com.loginov.lab3.robots;
 
 import com.loginov.lab3.Student;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class RobotPool {
-    private final static Logger logger = Logger.getLogger(RobotPool.class.getSimpleName());
-
+    private static final Logger logger = Logger.getLogger(RobotPool.class.getSimpleName());
     private static final String[] SUBJECT_NAMES = {"Вышмат", "ООП", "Физика"};
 
     private final Robot[] robots;
-
+    private final CountDownLatch countDownLatch;
 
     private OnRobotsReadyListener onRobotsReadyListener;
 
-    public RobotPool() {
+    public RobotPool(final CountDownLatch countDownLatch) {
+        this.countDownLatch = countDownLatch;
         this.robots = createRobots();
     }
 
@@ -32,7 +28,8 @@ public class RobotPool {
                 logger.log(Level.WARNING, "Listener cant be null on this state!", new IllegalStateException());
                 throw new IllegalStateException();
             }
-            onRobotsReadyListener.ready(getReadyRobots());
+            onRobotsReadyListener.ready();
+            countDownLatch.countDown();
         };
 
         for (int i = 0; i < robots.length; i++) {
@@ -42,49 +39,36 @@ public class RobotPool {
         return robots;
     }
 
-    public void nextStudent(final Student student) {
+    public boolean tryNextStudent(final Student student) {
         for (final Robot robot : robots) {
             if (student.getSubjectName().equals(robot.getSubjectName())
                     && robot.isReady()) {
                 robot.work(student);
-                return;
+                return true;
             }
         }
-        logger.log(Level.WARNING, "Студент зашёл, а робот занят! ", new IllegalStateException());
-    }
-
-    private List<String> getReadyRobots() {
-        if (robots == null) {
-            logger.log(Level.WARNING, "Robots is null!");
-            throw new IllegalStateException();
-        }
-
-        return Arrays.stream(robots)
-                .filter(Robot::isReady)
-                .map(Robot::getSubjectName)
-                .collect(Collectors.toList());
+//        logger.log(Level.INFO, "Студент " + student.getName() + " зашёл, а робот занят!");
+        return false;
     }
 
     public void setOnRobotsReadyListener(OnRobotsReadyListener onRobotsReadyListener) {
         this.onRobotsReadyListener = onRobotsReadyListener;
-        onRobotsReadyListener.ready(getReadyRobots());
+        onRobotsReadyListener.ready();
     }
 
-    public void printStats(final String filename) {
-        try (final PrintWriter out = new PrintWriter(new File(filename))) {
-            for (final Robot robot : robots) {
-                out.println("--------" + robot.getSubjectName() + "--------\n\n\n");
-                for (final String s : robot.getStats()) {
-                    out.println(s);
-                }
+    public void printStats(final PrintWriter out) {
+        for (final Robot robot : robots) {
+            out.println("--------" + robot.getSubjectName() + "--------\n");
+            out.println("--- Students count = " + robot.getStudentsCount());
+            for (final String s : robot.getStats()) {
+                out.println(s);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
+        out.println("\n\n\n");
     }
 
     @FunctionalInterface
     public interface OnRobotsReadyListener {
-        void ready(List<String> robots);
+        void ready();
     }
 }
