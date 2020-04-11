@@ -11,12 +11,7 @@ public class Lab1 {
     private static final String filenameIn = "input.txt";
     private static final String filenameOut = "output.txt";
 
-    // THIS IS SOLUTION!!!!!!!
-    // LOOK HERE!
-    // HACK ME PLEASE, if you can!!!
-
     void solve() {
-
         int n = nextInt();
         int[] numbers = nextIntArray(n);
 
