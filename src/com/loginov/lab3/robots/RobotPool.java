@@ -2,8 +2,6 @@ package com.loginov.lab3.robots;
 
 import com.loginov.lab3.Student;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -59,25 +57,14 @@ public class RobotPool {
         onRobotsReadyListener.ready();
     }
 
-    public void printStats(final PrintWriter out) {
-        for (final Robot robot : robots) {
-            out.println("--------" + robot.getSubjectName() + "--------\n");
-            out.println("--- Students count = " + robot.getStudentsCount());
-            for (final String s : robot.getStats()) {
-                out.println(s);
-            }
-        }
-        out.println("\n\n\n");
-    }
-
     public void printStats(final CountDownLatch writtenStats, final String dirPath) {
         for (final Robot robot : robots) {
             CompletableFuture.runAsync(() -> {
-                robot.printStats(dirPath);
+                robot.printLogs(dirPath);
             }).thenAccept(aVoid -> {
                 writtenStats.countDown();
             }).exceptionally(e -> {
-                logger.log(Level.WARNING, "Robot " + robot.getSubjectName() + " can`t print statistic", e);
+                logger.log(Level.WARNING, "Robot " + robot.getSubjectName() + " can`t print logs", e);
                 return null;
             });
         }

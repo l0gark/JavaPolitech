@@ -17,7 +17,7 @@ public class Main {
     private final static Logger logger = Logger.getLogger(Main.class.getSimpleName());
     private final static int ROOM_CAPACITY = 10;
     private final static int ALL_STUDENTS = 100;
-    private final static String OUT_DIR = "src/com/loginov/lab3/output/";
+    private final static String OUT_DIR = "src/com/loginov/lab3/logs/";
 
 
     public static void main(String[] args) {
@@ -52,11 +52,11 @@ public class Main {
             Thread.currentThread().interrupt();
         }
 
-        //print robots statistic
+        //print robots logs
         final CountDownLatch writtenStats = new CountDownLatch(robotPool.getRobotsCount());
         robotPool.printStats(writtenStats, OUT_DIR);
 
-        //Print total statistic
+        //Print total logs
         final File file = new File(OUT_DIR + "total.txt");
         try (final PrintWriter out = new PrintWriter(file)) {
             out.println("QUEUE = \n" + Arrays.toString(queue.toArray(new Student[0])));

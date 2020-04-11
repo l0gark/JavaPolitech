@@ -67,7 +67,7 @@ public class Robot {
         logger.info(msg);
     }
 
-    protected void printStats(final String dirPath) {
+    protected void printLogs(final String dirPath) {
         final String filename = dirPath + subjectName + "_stats.txt";
 
         try (final PrintWriter out = new PrintWriter(new File(filename))) {
@@ -77,8 +77,7 @@ public class Robot {
                 out.println(s);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            logger.warning("File " + filename + " not found");
+            logger.log(Level.WARNING, e.getLocalizedMessage(), e);
         }
     }
 
@@ -94,10 +93,7 @@ public class Robot {
         return studentsCount.get();
     }
 
-    public ConcurrentLinkedDeque<String> getStats() {
-        return stats;
-    }
-
+    @FunctionalInterface
     public interface OnNextStudentListener {
         void next(String robotName);
     }
