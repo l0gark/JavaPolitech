@@ -2,6 +2,9 @@ package com.loginov.lab3.robots;
 
 import com.loginov.lab3.Student;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Robot {
-    private final Logger log = Logger.getLogger(Robot.class.getSimpleName());
+    private final Logger logger = Logger.getLogger(Robot.class.getSimpleName());
 
     private final AtomicBoolean ready = new AtomicBoolean(true);
     private final String subjectName;
@@ -54,13 +57,29 @@ public class Robot {
             printMessage("Robot " + subjectName.toUpperCase() + " is ready");
             onNextStudentListener.next(subjectName);
         }).exceptionally(e -> {
-            log.log(Level.WARNING, e, e::getLocalizedMessage);
+            logger.log(Level.WARNING, e, e::getLocalizedMessage);
             return null;
         });
     }
 
     private void printMessage(final String msg) {
         stats.add(msg);
+        logger.info(msg);
+    }
+
+    protected void printStats(final String dirPath) {
+        final String filename = dirPath + subjectName + "_stats.txt";
+
+        try (final PrintWriter out = new PrintWriter(new File(filename))) {
+            out.println("--------" + subjectName.toUpperCase() + " Statistic --------\n");
+            out.println("--- Students count = " + getStudentsCount());
+            for (final String s : stats) {
+                out.println(s);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            logger.warning("File " + filename + " not found");
+        }
     }
 
     public String getSubjectName() {

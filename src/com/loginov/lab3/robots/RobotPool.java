@@ -2,7 +2,10 @@ package com.loginov.lab3.robots;
 
 import com.loginov.lab3.Student;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +50,7 @@ public class RobotPool {
                 return true;
             }
         }
-        logger.log(Level.INFO, "Student " + student.getName() + " go, but robot is busy!");
+        logger.info("Student " + student.getName() + " go, but robot is busy!");
         return false;
     }
 
@@ -65,6 +68,23 @@ public class RobotPool {
             }
         }
         out.println("\n\n\n");
+    }
+
+    public void printStats(final CountDownLatch writtenStats, final String dirPath) {
+        for (final Robot robot : robots) {
+            CompletableFuture.runAsync(() -> {
+                robot.printStats(dirPath);
+            }).thenAccept(aVoid -> {
+                writtenStats.countDown();
+            }).exceptionally(e -> {
+                logger.log(Level.WARNING, "Robot " + robot.getSubjectName() + " can`t print statistic", e);
+                return null;
+            });
+        }
+    }
+
+    public int getRobotsCount() {
+        return robots.length;
     }
 
     @FunctionalInterface
