@@ -44,7 +44,7 @@ public class Robot {
                 }
 
 
-                printMessage("Robot " + subjectName.toUpperCase() + " continue check " + student.getName());
+                printMessage("Continue " + student.getName());
                 restLabs -= VELOCITY;
             }
         }).thenAccept(aVoid -> {

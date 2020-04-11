@@ -6,7 +6,7 @@ import java.util.Collection;
 import static com.loginov.lab3.robots.RobotPool.SUBJECT_NAMES;
 
 public final class StudentGenerator {
-    private static final int[] LAB_COUNTS = {10, 20, 15};
+    private static final int[] LAB_COUNTS = {10, 20, 100};
 
     private StudentGenerator() {
     }
